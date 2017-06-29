@@ -1,2 +1,2 @@
-require_relative 'plan_out/interpreter'
-require_relative 'plan_out/experiment'
+require_relative 'planout_rails/interpreter'
+require_relative 'planout_rails/experiment'

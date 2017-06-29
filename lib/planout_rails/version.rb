@@ -1,3 +1,3 @@
-module Planout
-  VERSION = "0.1.0"
+module PlanOut
+  VERSION = "0.1.1"
 end

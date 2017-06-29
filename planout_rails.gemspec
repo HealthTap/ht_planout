@@ -5,7 +5,7 @@ require 'planout_rails/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "planout_rails"
-  spec.version       = Planout::VERSION
+  spec.version       = PlanOut::VERSION
   spec.authors       = ["Jerry Uejio"]
   spec.email         = ["jerry.uejio@healthtap.com"]
 
@@ -31,5 +31,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 1.14"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rake", '~> 0.9'
+  spec.add_development_dependency "rails", "3.2.22.5"
 end
