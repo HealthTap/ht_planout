@@ -17,7 +17,7 @@ module PlanOut
     logger_configured = false
 
     def initialize(inputs)
-      @inputs = inputs           # input data
+      @inputs = inputs # input data
 
       # true when assignments have been exposure logged
       @_exposure_logged = false
@@ -157,10 +157,7 @@ module PlanOut
       should_log_exposure = true
       if defined? get_param_names
         params = get_param_names
-        begin
-          name = name.to_sym
-        rescue
-        end
+        name = name.to_sym rescue name
         should_log_exposure = params.include? name
       end
       requires_exposure_logging(should_log_exposure)

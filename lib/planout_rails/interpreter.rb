@@ -68,20 +68,19 @@ module PlanOut
 
     def has(name)
       """Check if a variable exists in the PlanOut environment"""
+      name = name.to_sym rescue name
       return @_env.include?(name)
     end
 
     def get(name, default=nil)
       """Get a variable from the PlanOut environment"""
-      begin
-        name = name.to_sym
-      rescue
-      end
+      name = name.to_sym rescue name
       return @_env.get(name, @_inputs.fetch(name, default)) #TODO force symbol?
     end
 
     def set(name, value)
       """Set a variable in the PlanOut environment"""
+      name = name.to_sym rescue name
       @_env[name] = value #TODO force symbol?
       return self
     end
@@ -102,21 +101,18 @@ module PlanOut
 
     def has_override(name)
       """Check to see if a variable has an override."""
-      begin
-        name = name.to_sym
-      rescue
-      end
+      name = name.to_sym rescue name
       return self.get_overrides().include?(name)
     end
 
     def evaluate(planout_code)
       """Recursively evaluate PlanOut interpreter code"""
       # if the object is a PlanOut operator, execute it it.
-      if planout_code.class == Hash && planout_code.include?(:op)
+      if planout_code.is_a?(Hash) && planout_code.include?(:op)
         return PlanOutOps::Operators.operatorInstance(planout_code).execute(self)
       # if the object is a list, iterate over the list and evaluate each
       # element
-      elsif planout_code.class == Array
+      elsif planout_code.is_a?(Array)
         return planout_code.map { |i| self.evaluate(i) }
       else
         return planout_code  # data is a literal

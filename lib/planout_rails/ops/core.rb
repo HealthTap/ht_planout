@@ -32,7 +32,6 @@ module PlanOutOps
 
     def execute(mapper)
       var, value = self.getArgString(:var), self.getArgMixed(:value)
-
       return if mapper.has_override(var)
 
       # if the value is operator, add the name of the variable as a salt if no
@@ -43,7 +42,7 @@ module PlanOutOps
 
       # if we are setting the special variable, experiment_salt, update mapper
       # object accordingly with the new experiment-level salt
-      if var == :experiment_salt # TODO: symbol or string?
+      if var == :experiment_salt
         mapper.experiment_salt = value
       end
 
@@ -101,7 +100,7 @@ module PlanOutOps
       # returns value at index if it exists, returns nil otherwise.
       # works with both lists and dictionaries.
       base, index = self.getArgIndexish(:base), self.getArgMixed(:index)
-      if base.class == Array
+      if base.is_a? Array
         if index >= 0 && index < base.length
             return base[index]
         else
@@ -109,13 +108,9 @@ module PlanOutOps
         end
       else
         # assume we have a dictionary
-        begin
-          index = index.to_sym
-        rescue
-        end
+        index = index.to_sym rescue index
         return base.fetch(index, nil)
       end
-
       return self.getArgIndexish(:base)[self.getArgMixed(:index)]
     end
 

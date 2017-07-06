@@ -64,13 +64,14 @@ module PlanOutOps
     end
 
     def self.isOperator(op)
-      return op.class == Hash && op.include?(:op)
+      return op.is_a?(Hash) && op.include?(:op)
     end
 
     def self.operatorInstance(params)
       op = params[:op]
       #assert (op in @@operators), "Unknown operator: %s" % op
-      return @@operators[op.to_sym].new(params) #TODO sym?
+      op = op.to_sym rescue op
+      return @@operators[op].new(params) #TODO sym?
     end
 
   end

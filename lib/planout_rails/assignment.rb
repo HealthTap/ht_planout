@@ -40,20 +40,13 @@ module PlanOut
       # maybe this should be a deep copy?
       @_overrides = overrides.clone
       @_overrides.each do |k, v|
-        begin
-          k = k.to_sym
-        rescue
-        end
         @_data[k] = @_overrides[k]
       end
     end
 
     def get(name, default=nil)
-      begin
-        name = name.to_sym
-      rescue
-      end
-      if [:_data, :_overrides, :experiment_salt].include?(name)
+      name = name.to_sym rescue name
+      if [:_data, :_overrides, :experiment_salt].include?(name) #TODO Remove this?
         return @__dict__[name]
       else
         return @_data.fetch(name, default)
@@ -65,10 +58,7 @@ module PlanOut
     end
 
     def set(name, value)
-      begin
-        name = name.to_sym
-      rescue
-      end
+      name = name.to_sym rescue name
       if [:_data, :_overrides, :salt_sep, :experiment_salt].include?(name)
         @__dict__[name] = value
         return
