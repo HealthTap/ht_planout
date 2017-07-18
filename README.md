@@ -1,6 +1,8 @@
-# Planout::Rails
+# HT::Rails
 
 Full Ruby port of Facebook's experimentation framework [PlanOut](https://github.com/jerry-uejio/ht_planout)
+
+Line by line port of everything except for namespaces, as the implementation is database specific
 
 ## Installation
 
