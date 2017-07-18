@@ -49,16 +49,16 @@ module PlanOutOps
       "randomFloat": RandomFloat,
       "randomInteger": RandomInteger,
       "bernoulliTrial": BernoulliTrial,
-      #"bernoulliFilter": BernoulliFilter,
+      "bernoulliFilter": BernoulliFilter,
       "uniformChoice": UniformChoice,
       "weightedChoice": WeightedChoice,
-      #"sample": Sample,
-      #"fastSample": FastSample
+      "sample": Sample,
+      "fastSample": FastSample
     }
 
     def self.registerOperators(operators)
       operators.each do |op, obj|
-        #assert op not in @@operators
+        raise "Opertor already registered: #{op}" if @@operators.include? op
         @@operators[op] = operators[op]
       end
     end
@@ -69,9 +69,9 @@ module PlanOutOps
 
     def self.operatorInstance(params)
       op = params[:op]
-      #assert (op in @@operators), "Unknown operator: %s" % op
       op = op.to_sym rescue op
-      return @@operators[op].new(params) #TODO sym?
+      raise "Unknown operator: #{op}" unless @@operators.include? op
+      return @@operators[op].new(params)
     end
 
   end

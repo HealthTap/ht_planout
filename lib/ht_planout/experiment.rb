@@ -39,24 +39,23 @@ module PlanOut
     end
 
     def _assign
-      #Assignment and setup that only happens when we need to log data
+      # Assignment and setup that only happens when we need to log data
       configure_logger()  # sets up loggers
 
-      #consumers can optionally return false from assign if they don't want exposure to be logged
+      # Consumers can optionally return false from assign if they don't want exposure to be logged
       assign_val = assign(@_assignment, **@inputs)
       @_in_experiment = assign_val || assign_val == nil ? true : false
-      @_checksum = checksum()
       @_assigned = true
     end
 
     def setup
-      #Set experiment attributes, e.g., experiment name and salt.
+      # Set experiment attributes, e.g., experiment name and salt.
       # If the experiment name is not specified, just use the class name
     end
 
     def set_overrides(value)
-      #Sets variables that are to remain fixed during execution.
-      # note that setting this will overwrite inputs to the experiment
+      # Sets variables that are to remain fixed during execution.
+      # Note that setting this will overwrite inputs to the experiment
       @_assignment.set_overrides(value)
       o = @_assignment.get_overrides()
       o.each do |var|
@@ -94,11 +93,11 @@ module PlanOut
     end
 
     def assign(assignment, args)
-      #Returns evaluated PlanOut mapper with experiment assignment
+      # Returns evaluated PlanOut mapper with experiment assignment
     end
 
     def __asBlob(extras={})
-      #Dictionary representation of experiment data
+      # Dictionary representation of experiment data
       requires_assignment
       d = {
         'name': name,
@@ -110,27 +109,7 @@ module PlanOut
       extras.each do |k|
         d[k] = extras[k]
       end
-      if @_checksum
-        d['checksum'] = @_checksum
-      end
       return d
-    end
-
-    def checksum
-      # if we're running from a file and want to detect if the experiment
-      # file has changed
-      #if hasattr(main, '__file__') #wtf?????
-        # src doesn't count first line of code, which includes function
-        # name
-        #src = ''.join(inspect.getsourcelines(self.assign)[0][1:])
-        #if not isinstance(src, six.binary_type)
-        #  src = src.encode("ascii")
-        #end
-        #return hashlib.sha1(src).hexdigest()[:8]
-      # if we're running in an interpreter, don't worry about it
-      #else
-        #return nil
-      #end
     end
 
     # we should probably get rid of this public interface
@@ -139,12 +118,12 @@ module PlanOut
     end
 
     def set_auto_exposure_logging(value)
-      #Disables / enables auto exposure logging (enabled by default).
+      # Disables / enables auto exposure logging (enabled by default).
       @_auto_exposure_log = value
     end
 
     def get_params
-      #Get all PlanOut parameters. Triggers exposure log.
+      # Get all PlanOut parameters. Triggers exposure log.
       # In general, this should only be used by custom loggers.
       requires_assignment
       requires_exposure_logging
@@ -152,7 +131,7 @@ module PlanOut
     end
 
     def get(name, default=nil)
-      #Get PlanOut parameter (returns default if undefined). Triggers exposure log.
+      # Get PlanOut parameter (returns default if undefined). Triggers exposure log.
       requires_assignment
       should_log_exposure = true
       if defined? get_param_names
@@ -165,14 +144,14 @@ module PlanOut
     end
 
     def to_s
-      #String representation of exposure log data. Triggers exposure log.
+      # String representation of exposure log data. Triggers exposure log.
       requires_assignment
       requires_exposure_logging
       return __asBlob().to_s
     end
 
     def log_exposure(extras=nil)
-      #Logs exposure to treatment
+      # Logs exposure to treatment
       if !@_in_experiment
         return
       end
@@ -181,7 +160,7 @@ module PlanOut
     end
 
     def log_event(event_type, extras=nil)
-      #Log an arbitrary event
+      # Log an arbitrary event
       if !@_in_experiment
         return
       end
@@ -194,11 +173,11 @@ module PlanOut
     end
 
     def configure_logger
-      #Set up files, database connections, sockets, etc for logging.
+      # Set up files, database connections, sockets, etc for logging.
     end
 
     def log(data)
-      #Log experimental data
+      # Log experimental data
     end
 
     def previously_logged
@@ -207,7 +186,6 @@ module PlanOut
       # For high-use applications, one might have this method to check if
       # there is a memcache key associated with the checksum of the
       # inputs+params
-
     end
 
     # decorator for methods that assume assignments have been made
@@ -261,25 +239,8 @@ module PlanOut
     logger = {}
     log_file = {}
 
-    def configure_logger
-      # Sets up logger to log to a file
-      #my_logger = self.class.logger
-      # only want to set logging handler once for each experiment (name)
-      #if !self.class.logger.include? name
-      #  if !self.class.log_file.include? name
-      #    self.class.log_file[name] = "#{name}.log"
-      #  end
-      #  file_name = self.class.log_file[name]
-      #  my_logger[name] = logging.getLogger(name)
-      #  my_logger[name].setLevel(logging.INFO)
-      #  my_logger[name].addHandler(logging.FileHandler(file_name))
-      #  my_logger[name].propagate = false
-      #end
-    end
-
     def log(data)
       # Logs data to a file
-      #self.class.logger[name].info(JSON.dump(data))
     end
 
     def set_log_file(path)
@@ -314,8 +275,9 @@ module PlanOut
 
     def assign(params, args)
       loadScript()  # lazily load script
-      # script must be a dictionary
-      #assert script.present? && type(script) == dict
+
+      # script must be a hash
+      raise "Experiment script must be a hash" unless @script.is_a?(Hash)
 
       interpreterInstance = Interpreter.new(
         @script,
@@ -330,16 +292,6 @@ module PlanOut
       return interpreterInstance.in_experiment
     end
 
-    def checksum
-      # script must be a dictionary
-      #assert script.present? && type(script) == dict
-      src = JSON.dump(@script)
-
-      #if not isinstance(src, six.binary_type)
-      #  src = src.encode("ascii")
-      #end
-      #return hashlib.sha1(src).hexdigest()[:8]
-    end
   end
 
   class ProductionExperiment < Experiment
@@ -347,7 +299,6 @@ module PlanOut
     # when a valid parameter is fetched via the get method
 
     #Returns a list of assignment parameter values that this experiment can take
-    #@abstractmethod
     def get_param_names
     end
 

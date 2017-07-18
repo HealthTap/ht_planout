@@ -23,10 +23,6 @@ module PlanOutOps
       end
       unit_str = self.getUnit(appended_unit).map { |el| el.to_s }.join('.')
       hash_str = "#{full_salt}#{unit_str}"
-      #if !hash_str.is_a? six.binary_type
-      #  hash_str = hash_str.encode("ascii")
-      #end
-      #return Int(hashlib.sha1(hash_str).hexdigest()[:15], 16)
       (Digest::SHA1.hexdigest(hash_str))[0..14].to_i(16)
     end
 
@@ -63,10 +59,7 @@ module PlanOutOps
 
     def simpleExecute
       p = self.getArgNumeric(:p)
-      #assert p >= 0 and p <= 1.0, \
-      #    '%s: p must be a number between 0.0 and 1.0, not %s!' \
-      #    % (self.__class__, p)
-
+      raise "#{self.class}: p must be a number between 0.0 and 1.0, not #{p}!" unless p >= 0 && p <= 1.0
       rand_val = self.getUniform(0.0, 1.0)
       rand_val <= p ? 1 : 0
     end
@@ -77,10 +70,7 @@ module PlanOutOps
     def simpleExecute
       p = self.getArgNumeric(:p)
       values = self.getArgList(:choices)
-      #assert p >= 0 and p <= 1.0, \
-      #    '%s: p must be a number between 0.0 and 1.0, not %s!' \
-      #    % (self.__class__, p)
-
+      raise "#{self.class}: p must be a number between 0.0 and 1.0, not #{p}!" unless p >= 0 && p <= 1.0
       if values.length == 0
         return []
       end
@@ -136,9 +126,7 @@ module PlanOutOps
     def getNumDraws(choices)
       if self.args.include? :draws
         num_draws = self.getArgInt(:draws)
-        #assert num_draws <= choices.length, \
-        #    "%s: cannot make %s draws when only %s choices are available" \
-        #    % (self.__class__, num_draws, choices).length
+        raise "#{self.class}: cannot make #{num_draws} draws when only #{choices.length} choices are available" unless num_draws <= choices.length
         return num_draws
       else
         return choices.length

@@ -1,4 +1,1 @@
-require 'simplecov'
-SimpleCov.start
-
-require_relative '../lib/planout_rails'
+require_relative '../lib/ht_planout'

@@ -12,57 +12,49 @@ module PlanOutOps
     end
 
     def getArgMixed(name)
-      #assert name in self.args, \
-      #    "%s: missing argument: %s." % (self.__class__, name)
+      raise "#{self.class}: missing argument: #{name}." unless @args.include?(name)
       return @args[name]
     end
 
     def getArgInt(name)
       arg = self.getArgMixed(name)
-      #assert isinstance(arg, six.integer_types), \
-      #    "%s: %s must be an int." % (self.__class__, name)
+      raise "#{self.class}: #{name} must be an int." unless arg.respond_to?(:to_i)
       return arg
     end
 
     def getArgFloat(name)
       arg = self.getArgMixed(name)
-      #assert isinstance(arg, (six.integer_types, float)), \
-      #    "%s: %s must be a number." % (self.__class__, name)
-      return Float(arg)
+      raise "#{self.class}: #{name} must be a float." unless arg.respond_to?(:to_f)
+      return arg.to_f
     end
 
     def getArgString(name)
       arg = self.getArgMixed(name)
-      #assert isinstance(arg, six.string_types), \
-      #    "%s: %s must be a string." % (self.__class__, name)
+      raise "#{self.class}: #{name} must be an string. Not a: #{arg.class}" unless arg.respond_to?(:to_s) || arg.respond_to?(:to_sym)
       return arg
     end
 
     def getArgNumeric(name)
       arg = self.getArgMixed(name)
-      #assert isinstance(arg, (six.integer_types, float)), \
-      #    "%s: %s must be a numeric." % (self.__class__, name)
+      raise "#{self.class}: #{name} must be a float." unless arg.respond_to?(:to_f)
       return arg
     end
 
     def getArgList(name)
       arg = self.getArgMixed(name)
-      #assert isinstance(arg, (list, tuple)), \
-      #    "%s: %s must be a list." % (self.__class__, name)
+      raise "#{self.class}: #{name} must be a list. Not a: #{arg}" unless arg.respond_to?(:to_a)
       return arg
     end
 
     def getArgMap(name)
       arg = self.getArgMixed(name)
-      #assert isinstance(arg, dict), \
-      #    "%s: %s must be a map." % (self.__class__, name)
+      raise "#{self.class}: #{name} must be a map." unless arg.respond_to?(:to_h)
       return arg
     end
 
     def getArgIndexish(name)
       arg = self.getArgMixed(name)
-      #assert isinstance(arg, (dict, list, tuple)), \
-      #    "%s: %s must be a map or list." % (self.__class__, name)
+      raise "#{self.class}: #{name} must be a map or list." unless arg.respond_to?(:to_a) || arg.respond_to?(:to_h)
       return arg
     end
   end
@@ -105,7 +97,7 @@ module PlanOutOps
   class PlanOutOpCommutative < PlanOutOpSimple
 
     def simpleExecute
-      #assert (:values in self.args), "expected argument :values"
+      raise "expected argument: values" unless @args.include?(:values)
       return self.commutativeExecute(self.getArgList(:values))
     end
 

@@ -46,22 +46,20 @@ module PlanOut
         end
         @_evaluated = true
       end
-      return @_env #TODO should this be just @_env?
+      return @_env
     end
 
-    #@property
     def in_experiment
       return @_in_experiment
     end
 
-    #@property
     def salt_sep
       return @_env.salt_sep
     end
 
     def set_env(new_env)
       """Replace the current environment with a dictionary"""
-      @_env = new_env.clone #TODO: CHANGE TO DEEP COPY
+      @_env = new_env.clone
       # note that overrides are inhereted from new_env
       return self
     end
@@ -75,13 +73,13 @@ module PlanOut
     def get(name, default=nil)
       """Get a variable from the PlanOut environment"""
       name = name.to_sym rescue name
-      return @_env.get(name, @_inputs.fetch(name, default)) #TODO force symbol?
+      return @_env.get(name, @_inputs.fetch(name, default))
     end
 
     def set(name, value)
       """Set a variable in the PlanOut environment"""
       name = name.to_sym rescue name
-      @_env[name] = value #TODO force symbol?
+      @_env[name] = value
       return self
     end
 
