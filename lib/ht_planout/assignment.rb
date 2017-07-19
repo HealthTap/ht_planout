@@ -31,6 +31,11 @@ module PlanOut
     def set_overrides(overrides)
       @_overrides = overrides.clone
       @_overrides.each do |k, _v|
+        k = begin
+              k.to_sym
+            rescue
+              k
+            end
         @_data[k] = @_overrides[k]
       end
     end
