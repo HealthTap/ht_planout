@@ -2,8 +2,6 @@ require_relative 'utils'
 
 module PlanOutOps
   class PlanOutOp
-    # all PlanOut operator have some set of args that act as required and
-    # optional arguments
 
     attr_accessor :args, :mapper
 

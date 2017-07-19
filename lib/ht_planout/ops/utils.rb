@@ -17,7 +17,7 @@ module PlanOutOps
 
   class Operators
 
-    #Singleton class for inspecting and registering operators
+    # Singleton class for inspecting and registering operators
     @@operators = {
       "literal": Literal,
       "get": Get,

@@ -1,10 +1,3 @@
-# Copyright (c) 2014, Facebook, Inc.
-# All rights reserved.
-#
-# This source code is licensed under the BSD-style license found in the
-# LICENSE file in the root directory of this source tree. An additional grant
-# of patent rights can be found in the PATENTS file in the same directory.
-
 RSpec.describe "Test Core Ops" do
 
   def runConfig(config, init={})
@@ -19,7 +12,6 @@ RSpec.describe "Test Core Ops" do
   end
 
   it "sets" do
-    """Test setter"""
     # returns experiment object with probability p
     c = {'op': 'set', 'value': 'x_val', 'var': 'x'}
     d = runConfig(c)
@@ -27,7 +19,6 @@ RSpec.describe "Test Core Ops" do
   end
 
   it "sequence" do
-    """Test sequence"""
     config = {'op': 'seq', 'seq': [
         {'op': 'set', 'value': 'x_val', 'var': 'x'},
         {'op': 'set', 'value': 'y_val', 'var': 'y'}

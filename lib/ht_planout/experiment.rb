@@ -1,10 +1,3 @@
-# Copyright (c) 2014, Facebook, Inc.
-# All rights reserved.
-#
-# This source code is licensed under the BSD-style license found in the
-# LICENSE file in the root directory of this source tree. An additional grant
-# of patent rights can be found in the PATENTS file in the same directory.
-
 require 'json'
 require_relative 'interpreter'
 
@@ -17,30 +10,28 @@ module PlanOut
     logger_configured = false
 
     def initialize(inputs)
-      @inputs = inputs # input data
+      @inputs = inputs
 
-      # true when assignments have been exposure logged
+      # True when assignments have been exposure logged
       @_exposure_logged = false
-      @_salt = nil              # Experiment-level salt
+      @_salt = nil
 
       # Determines whether or not exposure should be logged
       @_in_experiment = true
 
-      # use the name of the class as the default name
       @_name = self.class.name
 
-      # auto-exposure logging is enabled by default
       @_auto_exposure_log = true
 
-      setup()                   # sets name, salt, etc.
+      setup() # sets name, salt, etc.
 
       @_assignment = Assignment.new(salt)
       @_assigned = false
     end
 
+    # Assignment and setup that only happens when we need to log data
     def _assign
-      # Assignment and setup that only happens when we need to log data
-      configure_logger()  # sets up loggers
+      configure_logger()  # Sets up loggers
 
       # Consumers can optionally return false from assign if they don't want exposure to be logged
       assign_val = assign(@_assignment, **@inputs)
@@ -201,11 +192,10 @@ module PlanOut
   end
 
   class DefaultExperiment < Experiment
-    #Dummy experiment which has no logging. Default experiments used by namespaces
-    #should inherent from this class.
+    # Dummy experiment which has no logging. Default experiments used by namespaces
+    # should inherent from this class.
 
     def configure_logger
-        # we don't log anything when there is no experiment
     end
 
     def log(data)
@@ -216,14 +206,14 @@ module PlanOut
       return true
     end
 
+    # Complex default experiments can override this method
     def assign(params, args)
-      # more complex default experiments can override this method
       params.update(get_default_params())
     end
 
     def get_default_params
-      #Default experiments that are just key-value stores should
-      #override this method.
+      # Default experiments that are just key-value stores should
+      # override this method.
       return {}
     end
 
@@ -270,7 +260,6 @@ module PlanOut
       # self.script = JSON.loads(open("myfile").read())
       # If constructing experiments on the fly, one can alternatively set the
       # self.script instance variable
-
     end
 
     def assign(params, args)
