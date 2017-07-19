@@ -5,9 +5,7 @@
 # LICENSE file in the root directory of this source tree. An additional grant
 # of patent rights can be found in the PATENTS file in the same directory.
 
-
-RSpec.describe "Test Random Operators" do
-
+RSpec.describe 'Test Random Operators' do
   # z_{\alpha/2} for \alpha=0.001, e.g., 99.9% CI: qnorm(1-(0.001/2))
   Z = 3.29
 
@@ -24,7 +22,6 @@ RSpec.describe "Test Random Operators" do
     return wrap
   end
 
-
   def valueMassToDensity(value_mass)
     values = value_mass.map{ |l| l[0]}
     ns = value_mass.map{ |l| l[1]}
@@ -33,9 +30,9 @@ RSpec.describe "Test Random Operators" do
     return value_density
   end
 
-  def distributionTester(func, value_mass, n=1000)
+  def distributionTester(func, value_mass, n = 1000)
     # run n trials of f() with input i
-    xs = (0..n-1).map{|i| func.call(i: i).get(:x)}
+    xs = (0..n - 1).map{|i| func.call(i: i).get(:x)}
     value_density = valueMassToDensity(value_mass)
 
     # test outcome frequencies against expected density
@@ -47,7 +44,7 @@ RSpec.describe "Test Random Operators" do
     xs.each { |el| hist[el] += 1 }
 
     # do binomial test of proportions for each item
-    hist.each do |k, v|
+    hist.each do |k, _v|
       assertProp(hist[k] / n, value_density[k], n)
     end
   end
@@ -91,7 +88,6 @@ RSpec.describe "Test Random Operators" do
   end
 
   it 'bernoulli' do
-
     # returns experiment function with x = BernoulliTrial(p) draw
     # experiment salt is p
     def bernoulliTrial(p)
@@ -108,7 +104,6 @@ RSpec.describe "Test Random Operators" do
   end
 
   it 'uniform choice' do
-
     # returns experiment function with x = UniformChoice(c) draw
     # experiment salt is a string version of c
     def uniformChoice(c)
@@ -123,13 +118,12 @@ RSpec.describe "Test Random Operators" do
 
     distributionTester(uniformChoice(['a']), [['a', 1]])
     distributionTester(
-        uniformChoice(['a', 'b']), [['a', 1], ['b', 1]])
+      uniformChoice(%w[a b]), [['a', 1], ['b', 1]])
     distributionTester(
-        uniformChoice([1, 2, 3, 4]), [[1, 1], [2, 1], [3, 1], [4, 1]])
+      uniformChoice([1, 2, 3, 4]), [[1, 1], [2, 1], [3, 1], [4, 1]])
   end
 
   it 'weighted choice' do
-
     # returns experiment function with x = WeightedChoice(c,w) draw
     # experiment salt is a string version of weighted_dict's keys
     def weightedChoice(weight_pairs)
@@ -142,7 +136,7 @@ RSpec.describe "Test Random Operators" do
       return experiment_decorator(w.map{|el| el.to_s}.join(',')).call(exp_func)
     end
 
-    d = [['a', 1],]
+    d = [['a', 1]]
     distributionTester(weightedChoice(d), d)
     d = [['a', 1], ['b', 2]]
     distributionTester(weightedChoice(d), d)
@@ -157,26 +151,25 @@ RSpec.describe "Test Random Operators" do
   end
 
   it 'sample' do
-
     # returns experiment function with x = sample(c, draws)
     # experiment salt is a string version of c
-    def sample(choices, draws, fast_sample=false)
+    def sample(choices, draws, fast_sample = false)
       exp_func = lambda do |e, i|
-        if fast_sample
-          e[:x] = PlanOutOps::FastSample.new(choices: choices, draws: draws, unit: i)
-        else
-          e[:x] = PlanOutOps::Sample.new(choices: choices, draws: draws, unit: i)
-        end
+        e[:x] = if fast_sample
+          PlanOutOps::FastSample.new(choices: choices, draws: draws, unit: i)
+                else
+          PlanOutOps::Sample.new(choices: choices, draws: draws, unit: i)
+                end
         expect(e[:x].length == draws).to be_truthy
         return e
       end
       return experiment_decorator(choices.map{|el| el.to_s}.join(',')).call(exp_func)
     end
 
-    def listDistributionTester(func, value_mass, n=1000)
+    def listDistributionTester(func, value_mass, n = 1000)
       value_density = valueMassToDensity(value_mass)
       # compute n trials
-      xs_list = (0..n-1).map{|i| func.call(i: i).get(:x)}
+      xs_list = (0..n - 1).map{|i| func.call(i: i).get(:x)}
 
       # each xs is a row of the transpose of xs_list.
       # this is expected to have the same distribution as value_density
@@ -186,13 +179,13 @@ RSpec.describe "Test Random Operators" do
     end
 
     listDistributionTester(
-      sample([1, 2, 3], draws=3), [[1, 1], [2, 1], [3, 1]])
+      sample([1, 2, 3], draws = 3), [[1, 1], [2, 1], [3, 1]])
     listDistributionTester(
-      sample([1, 2, 3], draws=2), [[1, 1], [2, 1], [3, 1]])
+      sample([1, 2, 3], draws = 2), [[1, 1], [2, 1], [3, 1]])
     listDistributionTester(
-      sample([1, 2, 3], draws=2, fast_sample=true), [[1, 1], [2, 1], [3, 1]])
+      sample([1, 2, 3], draws = 2, fast_sample = true), [[1, 1], [2, 1], [3, 1]])
     listDistributionTester(
-      sample(['a', 'a', 'b'], draws=3), [['a', 2], ['b', 1]])
+      sample(%w[a a b], draws = 3), [['a', 2], ['b', 1]])
 
     a = PlanOut::Assignment.new('assign_salt_a')
     a[:old_sample] = PlanOutOps::Sample.new(choices: [1, 2, 3, 4], draws: 1, unit: 1)
@@ -202,5 +195,4 @@ RSpec.describe "Test Random Operators" do
     expect(new_sample.length == 1).to be_truthy
     expect(a[:old_sample] != new_sample).to be_truthy
   end
-
 end

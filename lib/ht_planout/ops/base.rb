@@ -66,18 +66,15 @@ module PlanOutOps
   # and implement simpleExecute().
 
   class PlanOutOpSimple < PlanOutOp
-
     def execute(mapper)
       @mapper = mapper
-      parameter_names = @args.keys()
+      parameter_names = @args.keys
       parameter_names.each do |param|
         @args[param] = mapper.evaluate(@args[param])
       end
-      return self.simpleExecute()
+      return self.simpleExecute
     end
-
   end
-
 
   class PlanOutOpBinary < PlanOutOpSimple
     def simpleExecute
@@ -85,7 +82,6 @@ module PlanOutOps
         self.getArgMixed(:left),
         self.getArgMixed(:right))
     end
-
   end
 
   class PlanOutOpUnary < PlanOutOpSimple
@@ -95,11 +91,9 @@ module PlanOutOps
   end
 
   class PlanOutOpCommutative < PlanOutOpSimple
-
     def simpleExecute
-      raise "expected argument: values" unless @args.include?(:values)
+      raise 'expected argument: values' unless @args.include?(:values)
       return self.commutativeExecute(self.getArgList(:values))
     end
-
   end
 end

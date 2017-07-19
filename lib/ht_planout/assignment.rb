@@ -14,14 +14,13 @@ require_relative 'ops/base'
 
 module PlanOut
   class Assignment < Hash
-
-    """
+    ''"
     A mutable mapping that contains the result of an assign call.
-    """
+    "''
 
     attr_accessor :experiment_salt, :salt_sep
 
-    def initialize(experiment_salt, overrides={})
+    def initialize(experiment_salt, overrides = {})
       @experiment_salt = experiment_salt
       @_overrides = overrides.clone
       @_data = overrides.clone
@@ -38,31 +37,35 @@ module PlanOut
 
     def set_overrides(overrides)
       @_overrides = overrides.clone
-      @_overrides.each do |k, v|
+      @_overrides.each do |k, _v|
         @_data[k] = @_overrides[k]
       end
     end
 
-    def get(name, default=nil)
-      name = name.to_sym rescue name
+    def get(name, default = nil)
+      name = begin
+               name.to_sym
+             rescue
+               name
+             end
       @_data.fetch(name, default)
     end
 
-    def fetch(name, default=nil)
+    def fetch(name, default = nil)
       get(name, default)
     end
 
     def set(name, value)
-      name = name.to_sym rescue name
+      name = begin
+               name.to_sym
+             rescue
+               name
+             end
 
-      if @_overrides.include?(name)
-        return
-      end
+      return if @_overrides.include?(name)
 
       if value.is_a? PlanOutOps::PlanOutOpRandom
-        if !value.args.include? :salt
-          value.args[:salt] = name
-        end
+        value.args[:salt] = name unless value.args.include? :salt
         @_data[name] = value.execute(self)
       else
         @_data[name] = value
@@ -73,8 +76,8 @@ module PlanOut
       get(x)
     end
 
-    def []=(x,y)
-      set(x,y)
+    def []=(x, y)
+      set(x, y)
     end
 
     def ==(other)
@@ -84,6 +87,5 @@ module PlanOut
     def to_h
       @_data
     end
-
   end
 end
