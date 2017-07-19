@@ -36,7 +36,7 @@ module PlanOut
             rescue
               k
             end
-        @_data[k] = @_overrides[k]
+        @_data[k] = _v
       end
     end
 
